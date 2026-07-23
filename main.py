@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import sqlalchemy
+import datetime
 
 # Própria máquina
 engine = sqlalchemy.create_engine("sqlite:///database.db")
@@ -30,6 +31,30 @@ if df_stats.empty:
     st.warning("Não há dados históricos suficientes. Registre mais compras!")
 else:
     st.dataframe(df_compra)
+
+st.markdown("## Adicionar Compra")
+
+produtos = df_compra["produto"].unique().tolist()
+produtos.sort()
+produto = st.selectbox("Produto", options=[
+                       "Novo Produto"] + produtos)
+
+if produto == "Novo Produto":
+    produto_novo = st.text_input("Inserir novo Produto")
+    produto = produto_novo
+
+valor = st.number_input("Valor", min_value=0.01)
+
+if st.button("Registrar Compra"):
+    data = {
+        "dt_compra": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "produto": produto.title(),
+        "valor_produto": valor,
+    }
+
+    df_insert = pd.DataFrame([data])
+    df_insert.to_sql("compras", engine, if_exists="append", index=False)
+    st.success("Compra do produto registrada com sucesso!")
 
 st.markdown("## Importar Histórico")
 open_file = st.file_uploader("Entre com um arquivo histórico", type="csv")
