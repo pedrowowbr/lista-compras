@@ -1,13 +1,28 @@
+from gen_ai import generate
 import streamlit as st
 import pandas as pd
 import sqlalchemy
 import datetime
+import json
+
+import os
+import dotenv
+dotenv.load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 
 # Própria máquina
 engine = sqlalchemy.create_engine("sqlite:///database.db")
 
 with open("query_inteligente.sql") as query_file:
     query = query_file.read()
+
+with open("prompt_template.md") as prompt_file:
+    prompt = prompt_file.read()
+
+with open("resposta_template.json") as resposta_file:
+    resposta = json.load(resposta_file)
 
 st.set_page_config(page_title="Lista Inteligente")
 
@@ -66,3 +81,17 @@ if open_file:
     if st.button("Registrar Dados!"):
         df.to_sql("compras", engine, if_exists="append", index=False)
         st.success("Dados registrados com sucesso!")
+
+st.markdown("## Importar Nota Fiscal")
+
+open_img = st.file_uploader(
+    "Entre com um arquivo de Nota Fiscal", type=["png", "jpeg"])
+
+if open_img:
+    st.image(open_img)
+
+    prompt_exec = prompt.format(
+        produtos="\n".join(produtos), resposta=resposta)
+
+    resp = generate(prompt_exec, open_img.getvalue())
+    st.write(resp.text)

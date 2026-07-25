@@ -1,0 +1,17 @@
+[
+    {
+        "dt_compra": "2026-05-24",
+        "produto": "Maçã",
+        "valor_produto": 8.04
+    },
+    {
+        "dt_compra": "2026-05-24",
+        "produto": "Molho",
+        "valor_produto": 5.79
+    },
+    {
+        "dt_compra": "2026-05-24",
+        "produto": "Queijo",
+        "valor_produto": 15.67
+    }
+]

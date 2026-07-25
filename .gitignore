@@ -1,2 +1,6 @@
 venv/
 database.db
+.env
+*.pyc
+__pycache__/
+*.png
