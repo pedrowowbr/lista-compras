@@ -1,22 +1,39 @@
-# Instrução
+# Tarefa
 
-Considere a imagem de nota fiscal para extrair as seguintes informações:
-- nome do produto
-- valor unitário do produto
-- data da compra
+Analise a imagem da nota fiscal e extraia todos os produtos.
 
-## Nome do Produto
+## Regras
 
-Para o nome do produto, considere apenas o nome do objeto, descartando marca, medidas, peso e quantidade. Por exemplo, a lista a seguir:
+Para cada produto extraia:
 
-(produtos)
+- **dt_compra**: data da compra no formato YYYY-MM-DD.
+- **produto**: apenas o nome do produto, removendo marca, tamanho, peso, volume, quantidade e outras descrições.
+- **valor_produto**:
+  - se o item foi comprado em unidade, informe o valor unitário;
+  - se o item foi vendido por peso (kg ou g), informe o valor total pago pelo item.
 
-## Valor Produto
+## Produtos conhecidos
 
-Para valor do produto, em caso de unidades inteiras, considerar o valor unitário. Caso seja em Kilogramas/Gramas considere o valor total.
+{produtos}
 
-## Resposta
+Caso encontre um produto equivalente a um da lista acima, utilize exatamente o mesmo nome.
 
-Retorne os dados em formato json na seguinte estrutura:
+## Formato da resposta
 
-(resposta)
+Retorne **apenas** um JSON válido.
+
+Utilize **exatamente** estas chaves:
+
+- dt_compra
+- produto
+- valor_produto
+
+Não utilize outros nomes como:
+
+- nome_do_produto
+- data_da_compra
+- valor_unitario_do_produto
+
+O formato deve ser exatamente:
+
+{resposta}
