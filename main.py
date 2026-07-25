@@ -24,6 +24,18 @@ with open("prompt_template.md") as prompt_file:
 with open("resposta_template.json") as resposta_file:
     resposta = json.load(resposta_file)
 
+
+@st.cache_resource(ttl='10min')
+def process_nf(prompt, resposta_template, produtos, img_file):
+    st.image(open_img)
+
+    prompt_exec = prompt.format(
+        produtos="\n".join(produtos), resposta=resposta_template)
+    resp = generate(prompt_exec, img_file.getvalue(), img_file.type)
+    df = pd.DataFrame(json.loads(resp.text))
+    return df
+
+
 st.set_page_config(page_title="Lista Inteligente")
 
 st.markdown("# Lista de compras inteligente!")
@@ -88,10 +100,9 @@ open_img = st.file_uploader(
     "Entre com um arquivo de Nota Fiscal", type=["png", "jpeg"])
 
 if open_img:
-    st.image(open_img)
-
-    prompt_exec = prompt.format(
-        produtos="\n".join(produtos), resposta=resposta)
-
-    resp = generate(prompt_exec, open_img.getvalue())
-    st.write(resp.text)
+    df = process_nf(prompt=prompt, resposta_template=resposta,
+                    produtos=produtos, img_file=open_img)
+    df = st.data_editor(df)
+    if st.button("Registrar Dados!"):
+        df.to_sql("compras", engine, if_exists="append", index=False)
+        st.success("Dados registrados com sucesso!")

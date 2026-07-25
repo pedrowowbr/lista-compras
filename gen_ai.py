@@ -7,7 +7,7 @@ from google import genai
 from google.genai import types
 
 
-def generate(prompt, img):
+def generate(prompt, img, mime_type):
     client = genai.Client(
         api_key=os.environ.get("GEMINI_API_KEY"),
     )
@@ -17,7 +17,7 @@ def generate(prompt, img):
         types.Content(
             role="user",
             parts=[
-                types.Part.from_bytes(mime_type="image/png", data=img),
+                types.Part.from_bytes(mime_type=mime_type, data=img),
                 types.Part.from_text(text=prompt),
             ],
         ),
