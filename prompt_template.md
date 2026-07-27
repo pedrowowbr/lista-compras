@@ -28,12 +28,6 @@ Utilize **exatamente** estas chaves:
 - produto
 - valor_produto
 
-Não utilize outros nomes como:
-
-- nome_do_produto
-- data_da_compra
-- valor_unitario_do_produto
-
 O formato deve ser exatamente:
 
 {resposta}
