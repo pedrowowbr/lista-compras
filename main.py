@@ -46,6 +46,31 @@ def get_produtos(engine):
         return []
 
 
+def show_df_compra(df: pd.DataFrame):
+
+    df = df.sort_values(
+        ["comprar", "dias_desde_ultima_compra"], ascending=False)
+
+    mostrar_tudo = st.checkbox("Mostrar todos os produtos")
+
+    if not mostrar_tudo:
+        df = df[df["comprar"]]
+
+    columns_config = {
+        "produto": st.column_config.TextColumn("Produto"),
+        "dt_ultima_compra": st.column_config.DateColumn("Última Compra"),
+        "media_valor_produto": st.column_config.NumberColumn(label="Valor Médio", format="R$ %.2f"),
+        "avg_diff_dias_entre_compras": st.column_config.NumberColumn(label="Intervalo Entre Compras", format="%d"),
+        "dias_desde_ultima_compra": st.column_config.NumberColumn(label="Dias Sem Compra", format="%d"),
+        "comprar:": st.column_config.CheckboxColumn(label="Comprar")
+    }
+    st.dataframe(df, column_config=columns_config, hide_index=True)
+
+    if df["comprar"].max() == 0:
+        st.success(
+            f"Não há nada a ser comprado considerando {numero_dias_adiante} dias.")
+
+
 st.set_page_config(page_title="Lista Inteligente")
 
 st.markdown("# Lista de compras inteligente!")
@@ -60,20 +85,15 @@ try:
     df_stats = pd.read_sql(query, engine)
     df_stats["comprar"] = df_stats["dias_desde_ultima_compra"] + \
         numero_dias_adiante > df_stats["avg_diff_dias_entre_compras"]
-    df_comprar = df_stats[df_stats["comprar"]]
 
 except Exception as err:
     st.exception(err)
-    df_comprar = pd.DataFrame()
     df_stats = pd.DataFrame()
 
 if df_stats.empty:
     st.warning("Não há dados históricos suficientes. Registre mais compras!")
-elif df_comprar.empty:
-    st.success(
-        f"Não há nada a ser comprado considerando {numero_dias_adiante} dias.")
 else:
-    st.dataframe(df_comprar)
+    show_df_compra(df_stats)
 
 st.markdown("## Adicionar Compras")
 
