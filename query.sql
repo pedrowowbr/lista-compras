@@ -1,0 +1,3 @@
+SELECT DISTINCT produto
+FROM compras
+ORDER BY 1
