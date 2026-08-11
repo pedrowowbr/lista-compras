@@ -28,7 +28,7 @@ with open("resposta_template.json") as resposta_file:
 
 @st.cache_resource(ttl='10min')
 def process_nf(prompt, resposta_template, produtos, img_file):
-    st.image(open_img)
+    st.image(img_file)
 
     prompt_exec = prompt.format(
         produtos="\n".join(produtos), resposta=resposta_template)
@@ -63,7 +63,7 @@ def show_df_compra(df: pd.DataFrame):
         "media_valor_produto": st.column_config.NumberColumn(label="Valor Médio", format="R$ %.2f"),
         "avg_diff_dias_entre_compras": st.column_config.NumberColumn(label="Intervalo Entre Compras", format="%d"),
         "dias_desde_ultima_compra": st.column_config.NumberColumn(label="Dias Sem Compra", format="%d"),
-        "comprar:": st.column_config.CheckboxColumn(label="Comprar")
+        "comprar": st.column_config.CheckboxColumn(label="Comprar")
     }
     st.dataframe(df, column_config=columns_config, hide_index=True)
 
